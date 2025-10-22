@@ -196,43 +196,46 @@ frontend
 -Tutte le route protette richiedono 'header -> Authorization: Bearer <token>
 
 ## Route pubbliche
+
 - `POST /api/login` - Login utente
 
 ## Route protette
+
+#### Logout e informazioni utente
 - `POST /api/logout` - Logout utente
 - `GET /api/me` - Informazioni utente autenticato
 
 ### Commesse
-# Commesse assegnate a una risorsa
-- `GET /api/base/commesse-per-risorsa` - 
+#### Commesse assegnate a una risorsa
+- `GET /api/base/commesse-per-risorsa`
 Query Param: risorsa_id (opzionale)
 
-# File allegati a una commessa
-- `GET /api/base/commessa-files` - 
+#### File allegati a una commessa
+- `GET /api/base/commessa-files` 
 Query Param: commessa_id (opzionale)
 
 
 ### Tracking
-# Avvia una o più lavorazioni
-- `POST /api/lavorazione/registra-inizio-lavorazione` - 
-Body(singolo): { "dcl_id": 1, "risorsa_id": 123, "commessa_id": 456 }
+#### Avvia una o più lavorazioni
+- `POST /api/lavorazione/registra-inizio-lavorazione`
+Body(singolo): { "dcl_id": 1, "risorsa_id": 123, "commessa_id": 456 }, 
 Body(batch): { "items": [{ "dcl_id": 1, "risorsa_id": 123, "commessa_id": 456 }] }
 
-# Chiude una o più lavorazioni
-- `POST /api/lavorazione/registra-fine-lavorazione` - 
+#### Chiude una o più lavorazioni
+- `POST /api/lavorazione/registra-fine-lavorazione`
 Body(singolo): { "tempo_id": 10, "sec_tempo": 3600, "nr_pezzi": 5, "nr_pietre": 2 }, 
 Body(batch): { "items": [{ "tempo_id": 10, "sec_tempo": 3600, "nr_pezzi": 5, "nr_pietre": 2 }] }
 
-# Statistiche giornaliere per risorsa/data
-- `GET /api/base/statistiche-giornaliere` - 
+#### Statistiche giornaliere per risorsa/data
+- `GET /api/base/statistiche-giornaliere`
 Query Param: risorsa_id (opzionale), data (YYYY-MM-DD, opzionale, se non fornito fallback = giornata odierna)
 
-# Tempo totale per commessa per risorsa
+#### Tempo totale per commessa per risorsa
 - `GET /api/base/tempo-totale-per-commessa` – 
 Query Param: risorsa_id (opzionale), include_ongoing (0|1, opzionale)
 
-# Lavorazioni attive per risorsa
-- `GET /api/base/lavorazioni-attive` - 
+#### Lavorazioni attive per risorsa
+- `GET /api/base/lavorazioni-attive`
 Query Param: risorsa_id (opzionale)
 
 
