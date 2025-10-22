@@ -32,25 +32,26 @@ Sistema di gestione e tracking delle commesse, sviluppato da B4web s.r.l. per It
 - **Framework**: Laravel
 - **Database**: MSSQL
 - **API**: RESTful API
-- **Autenticazione**: Laravel
+- **Autenticazione**: Laravel Pasport (OAuth)
+- **Broadcasting**: Reverb (gestione pause ore 12:30)
 
 ### Frontend
 - **Framework**: React
-- **Gestione Stato**: React Context API / Redux
 - **Routing**: React Router
-- **UI**: Tailwind CSS / Material-UI
+- **UI**: Tailwind CSS
 - **HTTP Client**: Axios
 - **Timer Management**: Custom hooks per gestione cronometri
+- **Broadcasting**: Echo
 
 ## Requisiti di Sistema
 
 ### Backend
-- PHP >= 8.1
-- Node.js >= 16.x (per compilazione asset)
+- PHP >= 8.3
+- Node.js >= 22.x (per compilazione asset)
 
 ### Frontend
-- Node.js >= 16.x
-- npm o yarn
+- Node.js >= 22.x
+- npm
 
 ## Installazione
 
@@ -111,21 +112,28 @@ npm start
 ```env
 APP_NAME=Italgold
 APP_ENV=local
+APP_KEY=Chiave dell'app
 APP_URL=http://localhost:8000
 
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=italgold
-DB_USERNAME=root
+DB_CONNECTION=sqlsrv
+DB_HOST=192.168.0.72
+DB_PORT=1433
+DB_DATABASE=Tablet
+DB_USERNAME=php_user
 DB_PASSWORD=
+DB_ENCRYPT=yes
+DB_TRUST_SERVER_CERTIFICATE=true
 
-# Orari notifiche
-LUNCH_BREAK_TIME=12:30
-END_SHIFT_TIME=17:30
+REVERB_APP_ID=312182
+REVERB_APP_KEY=Key
+REVERB_APP_SECRET= Secret
+REVERB_HOST=192.168.0.7
+REVERB_PORT=8080
+REVERB_SCHEME=http
+REVERB_SERVER_HOST='0.0.0.0'
+REVERB_SERVER_PORT=8080
 
-# Limite tracking parallelo
-MAX_PARALLEL_TRACKING=10
+...
 ```
 
 ### Variabili d'Ambiente Frontend (.env)
@@ -140,34 +148,46 @@ REACT_APP_NAME=Italgold
 
 struttura d'esempio:
 ```
-italgold/
-├── backend/                 # Applicazione Laravel
-│   ├── app/
-│   │   ├── Http/
-│   │   │   ├── Controllers/
-│   │   │   └── Middleware/
-│   │   ├── Models/
-│   │   └── Services/
-│   ├── database/
-│   │   ├── migrations/
-│   │   └── seeders/
-│   ├── routes/
-│   │   └── api.php
+backend
+├───app
+│   ├───Console
+│   │   └───Commands
+│   ├───Events
+│   ├───Helpers
+│   ├───Http
+│   │   └───Controllers
+│   │       └───Api
+│   ├───Jobs
+│   ├───Models
+│   └───Providers
+├───bootstrap
+│   └───cache
+├───config
+├───database
+│   ├───factories
+│   ├───migrations
+│   └───seeders
+├───node_modules
 │   └── ...
-│
-└── frontend/               # Applicazione React
-    ├── public/
-    ├── src/
-    │   ├── components/
-    │   │   ├── Dashboard/
-    │   │   ├── Auth/
-    │   │   ├── Modals/
-    │   │   └── Common/
-    │   ├── hooks/
-    │   ├── services/
-    │   ├── context/
-    │   ├── utils/
-    │   └── App.js
+
+
+frontend
+└───src
+    ├───common
+    │   └───Loader
+    ├───components
+    │   ├───Header
+    │   ├───modals
+    │   └───Tables
+    ├───css
+    ├───fonts
+    ├───hooks
+    ├───images
+    │   └───product
+    ├───lib
+    ├───pages
+    ├───types
+    └───utils
     └── ...
 ```
 
@@ -176,12 +196,11 @@ italgold/
 ### Autenticazione
 - `POST /api/login` - Login utente
 - `POST /api/logout` - Logout utente
-- `GET /api/user` - Informazioni utente autenticato
+- `GET /api/me` - Informazioni utente autenticato
 
 ### Commesse
-- `GET /api/commesse` - Lista commesse assegnate all'utente
-- `GET /api/commesse/{id}` - Dettagli commessa
-- `GET /api/commesse/{id}/scheda-tecnica` - Scheda tecnica commessa
+- `GET /api/commesse-per-risorsa` - Lista commesse assegnate all'utente
+- `GET /api/commesse-files` - Scheda tecnica commessa
 
 ### Tracking
 - `POST /api/tracking/start` - Avvia tracking
