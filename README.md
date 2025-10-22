@@ -144,9 +144,7 @@ REACT_APP_NAME=Italgold
 ```
 
 ## Struttura del Progetto
-(qui la struttura del progetto)
 
-struttura d'esempio:
 ```
 backend
 ├───app
@@ -169,7 +167,7 @@ backend
 │   └───seeders
 ├───node_modules
 │   └── ...
-
+└── ...
 
 frontend
 └───src
@@ -189,26 +187,54 @@ frontend
     ├───types
     └───utils
     └── ...
+|___...    
 ```
 
 ## API Endpoints
 
 ### Autenticazione
+-Tutte le route protette richiedono 'header -> Authorization: Bearer <token>
+
+## Route pubbliche
 - `POST /api/login` - Login utente
+
+## Route protette
 - `POST /api/logout` - Logout utente
 - `GET /api/me` - Informazioni utente autenticato
 
 ### Commesse
-- `GET /api/commesse-per-risorsa` - Lista commesse assegnate all'utente
-- `GET /api/commesse-files` - Scheda tecnica commessa
+# Commesse assegnate a una risorsa
+- `GET /api/base/commesse-per-risorsa`
+Query Param: risorsa_id (opzionale)
+
+# File allegati a una commessa
+- `GET /api/base/commessa-files` 
+Query Param: commessa_id (opzionale)
+
 
 ### Tracking
-- `POST /api/tracking/start` - Avvia tracking
-- `POST /api/tracking/stop` - Ferma tracking
-- `GET /api/tracking/active` - Tracking attivi
-- `GET /api/tracking/daily-total` - Totale giornaliero
+# Avvia una o più lavorazioni
+- `POST /api/lavorazione/registra-inizio-lavorazione`
+Body(singolo): { "dcl_id": 1, "risorsa_id": 123, "commessa_id": 456 }
+Body(batch): { "items": [{ "dcl_id": 1, "risorsa_id": 123, "commessa_id": 456 }] }
 
-(CORREGGERE O AGGIUNGERE LE EFFETTIVE API UTILIZZATE)
+# Chiude una o più lavorazioni
+- `POST /api/lavorazione/registra-fine-lavorazione`
+Body(singolo): { "tempo_id": 10, "sec_tempo": 3600, "nr_pezzi": 5, "nr_pietre": 2 }
+Body(batch): { "items": [{ "tempo_id": 10, "sec_tempo": 3600, "nr_pezzi": 5, "nr_pietre": 2 }] }
+
+# Statistiche giornaliere per risorsa/data
+- `GET /api/base/statistiche-giornaliere`
+Query Param: risorsa_id (opzionale), data (YYYY-MM-DD, opzionale, se non fornito fallback = giornata odierna)
+
+# Tempo totale per commessa per risorsa
+- `GET /api/base/tempo-totale-per-commessa` – 
+Query Param: risorsa_id (opzionale), include_ongoing (0|1, opzionale)
+
+# Lavorazioni attive per risorsa
+- `GET /api/base/lavorazioni-attive`
+Query Param: risorsa_id (opzionale)
+
 
 ## Funzionalità Chiave
 
@@ -220,8 +246,13 @@ Il sistema gestisce il tracking del tempo attraverso:
 - Persistenza dei dati in caso di disconnessione
 
 ### Notifiche
+## Il server tramite un canale privato(Reverb) invia il messaggio ai tablet che sono online e che stanno registrando su una commessa
 - **Pausa Pranzo (12:30)**: Notifica per confermare/fermare tracking
 - **Fine Turno (17:30)**: Notifica per confermare/fermare tracking
+
+### Stato tablet(Admin)
+## L'amministratore potra vedere quale tablet e online con una query alla DB
+- Sul server ci sara un cron che ogni tot minuti andrà a controllare se raggiunge tutti i tablet e settare il loro stato (ON/OFF)
 
 ### Gestione Errori
 - Conferma prima di avviare tracking multipli
@@ -281,15 +312,13 @@ php artisan view:cache
 npm run build
 ```
 
-## Contribuire
+## Licenza
 
 Sviluppato da **B4web s.r.l.**
 - Via Giordano Bruno, 51 - 15121 Alessandria (AL)
 - Tel: 0131.1926569
 - Email: info@b4web.biz
 - Web: www.b4web.biz
-
-## Licenza
 
 Proprietario: Italgold  
 Sviluppatore: B4web s.r.l.
